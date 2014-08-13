@@ -55,16 +55,16 @@ A task must conform to `SLNTaskProtocol`.  For example:
 ```objective-c
 NSArray *tasks = @[[TaskA class]];
 // Run the scheduler every 5 minutes
-[SLNScheduler sharedInstance].minimumBackgroundFetchInterval = 60 * 5;
+[SLNScheduler setMinimumBackgroundFetchInterval:60 * 5];
 // Add the tasks
-[[SLNScheduler sharedInstance] scheduleTasks:tasks];
+[SLNScheduler scheduleTasks:tasks];
 ```
 
 In the application delegate:
 
 ```objective-c
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-  [[SLNScheduler sharedInstance] startWithCompletion:completionHandler];
+  [SLNScheduler startWithCompletion:completionHandler];
 }
 ```
 

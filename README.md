@@ -1,6 +1,6 @@
 # Selene
 
-Selene is an iOS library which schedules the execution of [background fetch](https://developer.apple.com/library/ios/documentation/iphone/conceptual/iphoneosprogrammingguide/ManagingYourApplicationsFlow/ManagingYourApplicationsFlow.html) operations on iOS.  It works similar to the [Linux Scheduler](http://oreilly.com/catalog/linuxkernel/chapter/ch10.html) (albeit in a simplified version).
+Selene is an iOS library which schedules the execution of [background fetch](https://developer.apple.com/library/ios/documentation/iphone/conceptual/iphoneosprogrammingguide/ManagingYourApplicationsFlow/ManagingYourApplicationsFlow.html) operations.  It works similar to the [Linux Scheduler](http://oreilly.com/catalog/linuxkernel/chapter/ch10.html) (albeit in a simplified version).
 
 # Installation
 

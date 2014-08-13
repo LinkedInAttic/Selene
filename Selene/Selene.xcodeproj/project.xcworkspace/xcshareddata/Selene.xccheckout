@@ -10,29 +10,29 @@
 	<string>Selene</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>4B358A50-D8A2-4F05-989C-914B9B529475</key>
+		<key>2A5BE2469510DE15694138CB0F058E5774006C5A</key>
 		<string>ssh://gitli.corp.linkedin.com/mobilize/ios-selene.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>Selene/Selene.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>4B358A50-D8A2-4F05-989C-914B9B529475</key>
+		<key>2A5BE2469510DE15694138CB0F058E5774006C5A</key>
 		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>ssh://gitli.corp.linkedin.com/mobilize/ios-selene.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>4B358A50-D8A2-4F05-989C-914B9B529475</string>
+	<string>2A5BE2469510DE15694138CB0F058E5774006C5A</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>4B358A50-D8A2-4F05-989C-914B9B529475</string>
+			<string>2A5BE2469510DE15694138CB0F058E5774006C5A</string>
 			<key>IDESourceControlWCCName</key>
 			<string>Selene</string>
 		</dict>

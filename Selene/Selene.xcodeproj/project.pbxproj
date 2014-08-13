@@ -1,0 +1,430 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A109A53019775654007869F6 /* SLNTaskProtocol.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A15EFFF1197742B400AE08CD /* SLNTaskProtocol.h */; };
+		A109A53119775654007869F6 /* SLNScheduler.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A15EFFF2197742E100AE08CD /* SLNScheduler.h */; };
+		A15EFFF4197742E100AE08CD /* SLNScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = A15EFFF3197742E100AE08CD /* SLNScheduler.m */; };
+		A1DDAB6019773AA300502B1C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1DDAB5F19773AA300502B1C /* Foundation.framework */; };
+		A1DDAB6519773AA300502B1C /* Selene.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A1DDAB6419773AA300502B1C /* Selene.h */; };
+		A1DDAB6E19773AA300502B1C /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1DDAB6D19773AA300502B1C /* XCTest.framework */; };
+		A1DDAB6F19773AA300502B1C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1DDAB5F19773AA300502B1C /* Foundation.framework */; };
+		A1DDAB7119773AA300502B1C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1DDAB7019773AA300502B1C /* UIKit.framework */; };
+		A1DDAB7419773AA300502B1C /* libSelene.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A1DDAB5C19773AA300502B1C /* libSelene.a */; };
+		A1DDAB7A19773AA300502B1C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A1DDAB7819773AA300502B1C /* InfoPlist.strings */; };
+		A1DDAB7C19773AA300502B1C /* SeleneTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A1DDAB7B19773AA300502B1C /* SeleneTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A1DDAB7219773AA300502B1C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1DDAB5419773AA300502B1C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A1DDAB5B19773AA300502B1C;
+			remoteInfo = Selene;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A1DDAB5A19773AA300502B1C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				A109A53019775654007869F6 /* SLNTaskProtocol.h in CopyFiles */,
+				A109A53119775654007869F6 /* SLNScheduler.h in CopyFiles */,
+				A1DDAB6519773AA300502B1C /* Selene.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A15EFFF1197742B400AE08CD /* SLNTaskProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLNTaskProtocol.h; sourceTree = "<group>"; };
+		A15EFFF2197742E100AE08CD /* SLNScheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLNScheduler.h; sourceTree = "<group>"; };
+		A15EFFF3197742E100AE08CD /* SLNScheduler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLNScheduler.m; sourceTree = "<group>"; };
+		A1DDAB5C19773AA300502B1C /* libSelene.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSelene.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1DDAB5F19773AA300502B1C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		A1DDAB6319773AA300502B1C /* Selene-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Selene-Prefix.pch"; sourceTree = "<group>"; };
+		A1DDAB6419773AA300502B1C /* Selene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Selene.h; sourceTree = "<group>"; };
+		A1DDAB6C19773AA300502B1C /* SeleneTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SeleneTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1DDAB6D19773AA300502B1C /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		A1DDAB7019773AA300502B1C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		A1DDAB7719773AA300502B1C /* SeleneTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SeleneTests-Info.plist"; sourceTree = "<group>"; };
+		A1DDAB7919773AA300502B1C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A1DDAB7B19773AA300502B1C /* SeleneTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SeleneTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A1DDAB5919773AA300502B1C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1DDAB6019773AA300502B1C /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1DDAB6919773AA300502B1C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1DDAB6E19773AA300502B1C /* XCTest.framework in Frameworks */,
+				A1DDAB7419773AA300502B1C /* libSelene.a in Frameworks */,
+				A1DDAB7119773AA300502B1C /* UIKit.framework in Frameworks */,
+				A1DDAB6F19773AA300502B1C /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A1DDAB5319773AA300502B1C = {
+			isa = PBXGroup;
+			children = (
+				A1DDAB6119773AA300502B1C /* Selene */,
+				A1DDAB7519773AA300502B1C /* SeleneTests */,
+				A1DDAB5E19773AA300502B1C /* Frameworks */,
+				A1DDAB5D19773AA300502B1C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A1DDAB5D19773AA300502B1C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A1DDAB5C19773AA300502B1C /* libSelene.a */,
+				A1DDAB6C19773AA300502B1C /* SeleneTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A1DDAB5E19773AA300502B1C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A1DDAB5F19773AA300502B1C /* Foundation.framework */,
+				A1DDAB6D19773AA300502B1C /* XCTest.framework */,
+				A1DDAB7019773AA300502B1C /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A1DDAB6119773AA300502B1C /* Selene */ = {
+			isa = PBXGroup;
+			children = (
+				A1DDAB6419773AA300502B1C /* Selene.h */,
+				A1DDAB6219773AA300502B1C /* Supporting Files */,
+				A15EFFF1197742B400AE08CD /* SLNTaskProtocol.h */,
+				A15EFFF2197742E100AE08CD /* SLNScheduler.h */,
+				A15EFFF3197742E100AE08CD /* SLNScheduler.m */,
+			);
+			path = Selene;
+			sourceTree = "<group>";
+		};
+		A1DDAB6219773AA300502B1C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A1DDAB6319773AA300502B1C /* Selene-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A1DDAB7519773AA300502B1C /* SeleneTests */ = {
+			isa = PBXGroup;
+			children = (
+				A1DDAB7B19773AA300502B1C /* SeleneTests.m */,
+				A1DDAB7619773AA300502B1C /* Supporting Files */,
+			);
+			path = SeleneTests;
+			sourceTree = "<group>";
+		};
+		A1DDAB7619773AA300502B1C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A1DDAB7719773AA300502B1C /* SeleneTests-Info.plist */,
+				A1DDAB7819773AA300502B1C /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A1DDAB5B19773AA300502B1C /* Selene */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1DDAB7F19773AA300502B1C /* Build configuration list for PBXNativeTarget "Selene" */;
+			buildPhases = (
+				A1DDAB5819773AA300502B1C /* Sources */,
+				A1DDAB5919773AA300502B1C /* Frameworks */,
+				A1DDAB5A19773AA300502B1C /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Selene;
+			productName = Selene;
+			productReference = A1DDAB5C19773AA300502B1C /* libSelene.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		A1DDAB6B19773AA300502B1C /* SeleneTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1DDAB8219773AA300502B1C /* Build configuration list for PBXNativeTarget "SeleneTests" */;
+			buildPhases = (
+				A1DDAB6819773AA300502B1C /* Sources */,
+				A1DDAB6919773AA300502B1C /* Frameworks */,
+				A1DDAB6A19773AA300502B1C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A1DDAB7319773AA300502B1C /* PBXTargetDependency */,
+			);
+			name = SeleneTests;
+			productName = SeleneTests;
+			productReference = A1DDAB6C19773AA300502B1C /* SeleneTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A1DDAB5419773AA300502B1C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = LinkedIn;
+			};
+			buildConfigurationList = A1DDAB5719773AA300502B1C /* Build configuration list for PBXProject "Selene" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = A1DDAB5319773AA300502B1C;
+			productRefGroup = A1DDAB5D19773AA300502B1C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A1DDAB5B19773AA300502B1C /* Selene */,
+				A1DDAB6B19773AA300502B1C /* SeleneTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A1DDAB6A19773AA300502B1C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1DDAB7A19773AA300502B1C /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A1DDAB5819773AA300502B1C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A15EFFF4197742E100AE08CD /* SLNScheduler.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1DDAB6819773AA300502B1C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1DDAB7C19773AA300502B1C /* SeleneTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A1DDAB7319773AA300502B1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A1DDAB5B19773AA300502B1C /* Selene */;
+			targetProxy = A1DDAB7219773AA300502B1C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		A1DDAB7819773AA300502B1C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A1DDAB7919773AA300502B1C /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		A1DDAB7D19773AA300502B1C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		A1DDAB7E19773AA300502B1C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A1DDAB8019773AA300502B1C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/Selene.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Selene/Selene-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		A1DDAB8119773AA300502B1C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/Selene.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Selene/Selene-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		A1DDAB8319773AA300502B1C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Selene/Selene-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "SeleneTests/SeleneTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		A1DDAB8419773AA300502B1C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Selene/Selene-Prefix.pch";
+				INFOPLIST_FILE = "SeleneTests/SeleneTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A1DDAB5719773AA300502B1C /* Build configuration list for PBXProject "Selene" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1DDAB7D19773AA300502B1C /* Debug */,
+				A1DDAB7E19773AA300502B1C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1DDAB7F19773AA300502B1C /* Build configuration list for PBXNativeTarget "Selene" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1DDAB8019773AA300502B1C /* Debug */,
+				A1DDAB8119773AA300502B1C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1DDAB8219773AA300502B1C /* Build configuration list for PBXNativeTarget "SeleneTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1DDAB8319773AA300502B1C /* Debug */,
+				A1DDAB8419773AA300502B1C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A1DDAB5419773AA300502B1C /* Project object */;
+}

@@ -1,0 +1,14 @@
+PODS:
+  - Selene (0.0.1)
+
+DEPENDENCIES:
+  - Selene (from `../`)
+
+EXTERNAL SOURCES:
+  Selene:
+    :path: ../
+
+SPEC CHECKSUMS:
+  Selene: 1ac0d2bdb9242a69eee76615d26464c82db63d7e
+
+COCOAPODS: 0.33.1

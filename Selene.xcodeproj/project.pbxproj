@@ -15,6 +15,16 @@
 		A1AC4A5C19BB7D30003AEDEF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1AC4A5B19BB7D30003AEDEF /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		A18F809219BB8776008670CB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A10ADCFE19BB7BC60081601C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A10ADD0519BB7BC60081601C;
+			remoteInfo = Selene;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		A10ADD0419BB7BC60081601C /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -159,6 +169,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				A18F809319BB8776008670CB /* PBXTargetDependency */,
 			);
 			name = SeleneTests;
 			productName = SeleneTests;
@@ -229,6 +240,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A18F809319BB8776008670CB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A10ADD0519BB7BC60081601C /* Selene */;
+			targetProxy = A18F809219BB8776008670CB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		A10ADD1519BB7BC60081601C /* Debug */ = {

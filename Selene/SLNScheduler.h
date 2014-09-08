@@ -86,7 +86,8 @@
  Executes the set of tasks.
  
  @discussion
- Should be called from the App Delegate's application:performFetchWithCompletionHandler: method.
+ Should be called from the App Delegate's application:performFetchWithCompletionHandler: method. 
+ Must call this method from a single thread.
  
  @param completion
  Block which triggers when all operations are completed.  It is executed on the main queue.

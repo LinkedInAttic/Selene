@@ -18,6 +18,28 @@
 #error This file must be compiled with ARC. Convert your project to ARC or specify the -fobjc-arc flag.
 #endif
 
+#if !__has_feature(objc_arc)
+#error This file must be compiled with ARC. Convert your project to ARC or specify the -fobjc-arc flag.
+#endif
+
+#ifdef DEBUG
+#define SLN_ENABLE_LOGGING 1
+#else
+#define SLN_ENABLE_LOGGING 0
+#endif
+
+#if SLN_ENABLE_LOGGING != 0
+// First, check if we can use Cocoalumberjack for logging
+#ifdef LOG_VERBOSE
+extern int ddLogLevel;
+#define SLNLog(...) DDLogVerbose(__VA_ARGS__)
+#else
+#define SLNLog(...) NSLog(@"%s(%p) %@", __PRETTY_FUNCTION__, self, [NSString stringWithFormat:__VA_ARGS__])
+#endif
+#else
+#define SLNLog(...) ((void)0)
+#endif
+
 // Used as key for storing the last execution time of tsaks, in NSUserDefaults
 static NSString * const kSLNExecutionSchedule = @"kSLNExecutionSchedule";
 static NSString * const kSLNRecentResponseTimes = @"kSLNRecentResponseTimes";
@@ -149,6 +171,10 @@ static NSInteger const kSLNMaxNumberOfResponseTimesToInclude = 30;
 
 @property (nonatomic) NSTimeInterval minimumBackgroundFetchInterval;
 
+@property (nonatomic, getter=isExecuting) BOOL executing;
+
+@property (nonatomic, copy) void (^completion)(UIBackgroundFetchResult);
+
 @end
 
 @implementation SLNScheduler
@@ -200,7 +226,7 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
 
 + (void)scheduleTasks:(NSArray *)tasks {
   SLNScheduler *instance = [SLNScheduler sharedInstance];
-
+  
   // Retrieve the execution schedule from the user defaults.  Then:
   // 1) Create the task
   // 2) Iterate through the list of passed in scheduled tasks, and deserialize its content into the appropriate
@@ -246,8 +272,15 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
 
 + (void)startWithCompletion:(void (^)(UIBackgroundFetchResult))completion {
   NSAssert(completion != nil, @"Completion block must exist.");
-
+  
   SLNScheduler *instance = [SLNScheduler sharedInstance];
+  if (instance.isExecuting) {
+    SLNLog(@"Scheduler already running.");
+    return;
+  }
+
+  instance.executing = YES;
+  instance.completion = [completion copy];
 
   // Retrieve the taks that need to execute
   NSArray *tasks = [instance nextTasks];
@@ -255,13 +288,14 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
   // If there are no operations, then there's nothing to do.  Simply short-cicuit.
   if ([tasks count] == 0) {
     dispatch_async(dispatch_get_main_queue(), ^{
-      completion(UIBackgroundFetchResultNoData);
+      instance.executing = NO;
+      instance.completion(UIBackgroundFetchResultNoData);
     });
     return;
   }
 
   dispatch_async(instance.queue, ^{
-    [instance execute:tasks completion:completion];
+    [instance execute:tasks];
   });
 }
 
@@ -287,7 +321,7 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
 
 // Executes the list of items.  When the execution of *all* tasks is complete, the completion
 // block is invoked.
-- (void)execute:(NSArray *)taskItems completion:(void (^)(UIBackgroundFetchResult))completion {
+- (void)execute:(NSArray *)taskItems {
   __weak __typeof(self) weakSelf = self;
 
   __block UIBackgroundFetchResult finalResult = UIBackgroundFetchResultNoData;
@@ -320,9 +354,10 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
     // Update the execution schedule
     [weakSelf save];
     // And we're done!
-    if (completion) {
+    if (weakSelf.completion) {
       dispatch_async(dispatch_get_main_queue(), ^{
-        completion(finalResult);
+        weakSelf.executing = NO;
+        weakSelf.completion(finalResult);
       });
     }
   }];

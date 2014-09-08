@@ -15,6 +15,20 @@
 #import "Selene.h"
 #import <objc/runtime.h>
 
+// Set the flag for a block completion handler
+#define StartBlock() __block BOOL waitingForBlock = YES
+// Set the flag to stop the loop
+#define EndBlock() waitingForBlock = NO
+// Wait and loop until flag is set
+#define WaitUntilBlockCompletes() WaitWhile(waitingForBlock)
+// Macro - Wait for condition to be NO/false in blocks and asynchronous calls
+#define WaitWhile(condition) \
+do { \
+  while(condition) { \
+    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]]; \
+  } \
+} while(0)
+
 // Dummy task class which conforms to SLNTaskProtocol, simple here so
 // we can easily get its methods' parameters and return types when dynamically
 // creating task classes
@@ -51,9 +65,10 @@ static const char * GetEncoding(SEL name) {
 
 - (Class<SLNTaskProtocol>)createTaskClassWithPriority:(SLNTaskPriority)priority
                                   averageResponseTime:(CGFloat)averageResponseTime
+                                        executionTime:(CGFloat)executionTime
                        numberOfPeriodsForResponseTime:(CGFloat)numberOfPeriodsForResponseTime
                                           fetchResult:(UIBackgroundFetchResult)fetchResult {
-  Class taskClass = [self createTaskClassWithPriority:priority averageResponseTime:averageResponseTime fetchResult:fetchResult];
+  Class taskClass = [self createTaskClassWithPriority:priority averageResponseTime:averageResponseTime executionTime:executionTime fetchResult:fetchResult];
   
   class_addMethod(object_getClass(taskClass), @selector(numberOfPeriodsForResponseTime), imp_implementationWithBlock(^NSInteger(id self){
     return numberOfPeriodsForResponseTime;
@@ -64,6 +79,7 @@ static const char * GetEncoding(SEL name) {
 
 - (Class<SLNTaskProtocol>)createTaskClassWithPriority:(SLNTaskPriority)priority
                                   averageResponseTime:(CGFloat)averageResponseTime
+                                        executionTime:(CGFloat)executionTime
                                           fetchResult:(UIBackgroundFetchResult)fetchResult {
   static int count = 0;
   
@@ -79,8 +95,16 @@ static const char * GetEncoding(SEL name) {
   }), GetEncoding(@selector(identifier)));
   
   class_addMethod(object_getClass(taskClass), @selector(operationWithCompletion:), imp_implementationWithBlock(^NSOperation*(id self, SLNTaskCompletion_t completion) {
-    NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-      completion(fetchResult);
+    NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+      dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
+                                   (int64_t)(executionTime * NSEC_PER_SEC)),
+                     dispatch_queue_create([[NSString stringWithFormat:@"selene.test.scheduler.queue.%@", taskClassName] UTF8String],
+                                           DISPATCH_QUEUE_SERIAL), ^{
+        completion(fetchResult);
+        dispatch_semaphore_signal(sema);
+      });
+      dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
     }];
     return operation;
   }), GetEncoding(@selector(operationWithCompletion:)));
@@ -96,41 +120,109 @@ static const char * GetEncoding(SEL name) {
   return taskClass;
 }
 
+- (void)reset {
+  StartBlock();
+  [SLNScheduler reset];
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    EndBlock();
+  });
+  
+  NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+  [userDefaults removeObjectForKey:@"kSLNExecutionSchedule"];
+  [userDefaults synchronize];
+  
+  WaitUntilBlockCompletes();
+}
+
 - (void)setUp {
   [super setUp];
   [SLNScheduler setMinimumBackgroundFetchInterval:60 * 10];
 }
 
-- (void)tearDown {
-  // Note, a proper test of moving average, the following line should be commented out
-  [SLNScheduler reset];
-  
+- (void)tearDown {  
   [super tearDown];
+  [self reset];
 }
 
 - (void)testExample {
-  dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-  
-  Class taskA = [self createTaskClassWithPriority:SLNTaskPriorityVeryLow averageResponseTime:25.0 fetchResult:UIBackgroundFetchResultNewData];
-  Class taskB = [self createTaskClassWithPriority:SLNTaskPriorityVeryHigh averageResponseTime:5.0 fetchResult:UIBackgroundFetchResultNewData];
-  Class taskC = [self createTaskClassWithPriority:SLNTaskPriorityLow averageResponseTime:5.0 fetchResult:UIBackgroundFetchResultNewData];
+  Class taskA = [self createTaskClassWithPriority:SLNTaskPriorityVeryLow averageResponseTime:25.0 executionTime:0 fetchResult:UIBackgroundFetchResultNewData];
+  Class taskB = [self createTaskClassWithPriority:SLNTaskPriorityVeryHigh averageResponseTime:5.0 executionTime:0 fetchResult:UIBackgroundFetchResultNewData];
+  Class taskC = [self createTaskClassWithPriority:SLNTaskPriorityLow averageResponseTime:5.0 executionTime:0 fetchResult:UIBackgroundFetchResultNewData];
   
   NSArray *tasks = @[taskA, taskB, taskC];
   [SLNScheduler scheduleTasks:tasks];
   
+  StartBlock();
+  
   void (^completion)(UIBackgroundFetchResult) = ^(UIBackgroundFetchResult result) {
-    dispatch_semaphore_signal(semaphore);
+    EndBlock();
+    XCTAssertTrue(YES, @"Tasks all successfully executed");
   };
   [SLNScheduler startWithCompletion:completion];
   
-  dispatch_time_t timeout = dispatch_time(DISPATCH_TIME_NOW, 1LL*NSEC_PER_SEC);
-  if (dispatch_semaphore_wait(semaphore, timeout) == 0) {
-    NSLog(@"success, semaphore signaled in time");
-  } else {
-    NSLog(@"failure, semaphore didn't signal in time");
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    EndBlock();
+    XCTAssertFalse(NO, @"Tasks did not finish in time");
+  });
+  
+  WaitUntilBlockCompletes();
+}
+
+- (void)testThreadSafeyAndMultipleExecutions {
+  Class taskA = [self createTaskClassWithPriority:SLNTaskPriorityVeryLow averageResponseTime:2.0 executionTime:1 fetchResult:UIBackgroundFetchResultNewData];
+  Class taskB = [self createTaskClassWithPriority:SLNTaskPriorityVeryHigh averageResponseTime:3.0 executionTime:2 fetchResult:UIBackgroundFetchResultNewData];
+  Class taskC = [self createTaskClassWithPriority:SLNTaskPriorityLow averageResponseTime:4.0 executionTime:2 fetchResult:UIBackgroundFetchResultNewData];
+  Class taskD = [self createTaskClassWithPriority:SLNTaskPriorityLow averageResponseTime:5.0 executionTime:3 fetchResult:UIBackgroundFetchResultNewData];
+  
+  NSArray *tasks = @[taskA, taskB, taskC, taskD];
+  
+  const NSInteger cycles = 5;
+  
+  NSOperationQueue *queue = [NSOperationQueue new];
+  NSMutableArray *operations = [NSMutableArray new];
+  for (NSInteger i = 0; i < cycles; i++) {
+    NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+      StartBlock();
+      [SLNScheduler scheduleTasks:tasks];
+      [SLNScheduler startWithCompletion:^(UIBackgroundFetchResult result) {
+        EndBlock();
+        NSLog(@"Tasks completed");
+      }];
+      [SLNScheduler startWithCompletion:^(UIBackgroundFetchResult result) { NSLog(@"Tasks completed"); }];
+      WaitUntilBlockCompletes();
+    }];
+    [operations addObject:op];
+  }
+
+  [SLNScheduler startWithCompletion:^(UIBackgroundFetchResult result) {
+    NSLog(@"Inner completed");
+  }];
+  
+  StartBlock();
+  NSBlockOperation *finalOp = [NSBlockOperation blockOperationWithBlock:^{
+    EndBlock();
+    XCTAssertTrue(YES, @"Tasks should complete execution");
+  }];
+  [operations addObject:finalOp];
+  
+  NSInteger i = [operations count] - 1;
+  while (i > 0) {
+    NSOperation *op = [operations objectAtIndex:i];
+    NSOperation *previousOp = [operations objectAtIndex:(i-1)];
+    if (previousOp) {
+      [op addDependency:previousOp];
+    }
+    i--;
   }
   
-  XCTAssertTrue(@"", @"");
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(60 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    EndBlock();
+    XCTAssertFalse(NO, @"Tasks did not finish in time");
+  });
+
+  [queue addOperations:operations waitUntilFinished:NO];
+  WaitUntilBlockCompletes();
 }
+
 
 @end

@@ -70,18 +70,6 @@ In the application delegate:
 }
 ```
 
-## Scheduling policy
+---
 
-The scheduling policy is the set of rules used to determine when and how selene selects a task to run.  Currently, Selene's scheduling policy ranks the tasks according to their **priority**, **average response time**, and **last executed time**.
-
-#### Priority
-
-Static value. This is dictated by the task's `NSObject<SLNTaskProtocol>::priority` function.
-
-#### Average Response Time
-
-Has an initial value set by the developer, but is then dynamically adjusted as a moving average of the last N executions, where N is defaulted to 3.  This is initially dictated by the task's `NSObject<SLNTaskProtocol>::averageResponseTime` function.
-
-#### Last Executed Time
-
-Dynamically determined, internally, by Selene.  The developer need not concern themselves with it.
+Interested? Here's the [blog post](http://engineering.linkedin.com/ios/introducing-selene-open-source-library-scheduling-tasks-ios)

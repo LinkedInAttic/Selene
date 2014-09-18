@@ -123,6 +123,7 @@ static const char * GetEncoding(SEL name) {
 - (void)reset {
   StartBlock();
   [SLNScheduler reset];
+  
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
     EndBlock();
   });
@@ -152,20 +153,17 @@ static const char * GetEncoding(SEL name) {
   NSArray *tasks = @[taskA, taskB, taskC];
   [SLNScheduler scheduleTasks:tasks];
   
-  StartBlock();
-  
+  XCTestExpectation *expectation = [self expectationWithDescription:@"Scheduled tasks"];
+
   void (^completion)(UIBackgroundFetchResult) = ^(UIBackgroundFetchResult result) {
-    EndBlock();
+    [expectation fulfill];
     XCTAssertTrue(YES, @"Tasks all successfully executed");
   };
   [SLNScheduler startWithCompletion:completion];
   
-  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-    EndBlock();
+  [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
     XCTAssertFalse(NO, @"Tasks did not finish in time");
-  });
-  
-  WaitUntilBlockCompletes();
+  }];
 }
 
 - (void)testThreadSafeyAndMultipleExecutions {
@@ -193,14 +191,16 @@ static const char * GetEncoding(SEL name) {
     }];
     [operations addObject:op];
   }
+  
+  
 
   [SLNScheduler startWithCompletion:^(UIBackgroundFetchResult result) {
     NSLog(@"Inner completed");
   }];
   
-  StartBlock();
+  XCTestExpectation *expectation = [self expectationWithDescription:@"All tasks have been scheduled"];
   NSBlockOperation *finalOp = [NSBlockOperation blockOperationWithBlock:^{
-    EndBlock();
+    [expectation fulfill];
     XCTAssertTrue(YES, @"Tasks should complete execution");
   }];
   [operations addObject:finalOp];
@@ -215,14 +215,11 @@ static const char * GetEncoding(SEL name) {
     i--;
   }
   
-  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(60 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-    EndBlock();
-    XCTAssertFalse(NO, @"Tasks did not finish in time");
-  });
-
   [queue addOperations:operations waitUntilFinished:NO];
-  WaitUntilBlockCompletes();
+  
+  [self waitForExpectationsWithTimeout:60 handler:^(NSError *error) {
+    XCTAssertFalse(NO, @"Tasks did not finish in time");
+  }];
 }
-
 
 @end

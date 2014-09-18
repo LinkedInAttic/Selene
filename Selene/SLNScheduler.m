@@ -18,10 +18,6 @@
 #error This file must be compiled with ARC. Convert your project to ARC or specify the -fobjc-arc flag.
 #endif
 
-#if !__has_feature(objc_arc)
-#error This file must be compiled with ARC. Convert your project to ARC or specify the -fobjc-arc flag.
-#endif
-
 #ifdef DEBUG
 #define SLN_ENABLE_LOGGING 1
 #else
@@ -148,7 +144,12 @@ static NSInteger const kSLNMaxNumberOfResponseTimesToInclude = 30;
 }
 
 - (NSString *)description {
-  return [NSString stringWithFormat:@"task: %@, last execution time: %f, moving average response time: %f, last score: %f", [self key], self.lastExecutionTime, [self movingAverageResponseTime], self.score];
+  return [NSString stringWithFormat:@"task: %@, last execution time: %f, moving average response time: %f, last score: %f",
+          [self key],
+          self.lastExecutionTime,
+          [self movingAverageResponseTime],
+          self.score
+          ];
 }
 
 @end
@@ -158,6 +159,8 @@ static NSInteger const kSLNMaxNumberOfResponseTimesToInclude = 30;
 #pragma mark - SLNScheduler
 
 @interface SLNScheduler ()
+
+@property (nonatomic, strong) NSUserDefaults *userDefaults;
 
 // This is NSOpertionQueue which contains the list of NSOperations for every taks.  The NSOperations
 // in this queue are marked for execution
@@ -211,6 +214,11 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
 
 #pragma mark - Accessors
 
++ (void)setUserDefaults:(NSUserDefaults *)userDaults {
+  SLNScheduler *instance = [SLNScheduler sharedInstance];
+  instance.userDefaults = userDaults;
+}
+
 + (void)setMinimumBackgroundFetchInterval:(NSTimeInterval)minimumBackgroundFetchInterval {
   SLNScheduler *instance = [SLNScheduler sharedInstance];
   instance.minimumBackgroundFetchInterval = minimumBackgroundFetchInterval;
@@ -231,7 +239,7 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
   // 1) Create the task
   // 2) Iterate through the list of passed in scheduled tasks, and deserialize its content into the appropriate
   //    SLNTaskContainer
-  NSDictionary *executionSchedule = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kSLNExecutionSchedule];
+  NSDictionary *executionSchedule = [instance.userDefaults dictionaryForKey:kSLNExecutionSchedule];
 
   // This flag dictates where the execution schedule should be saved.  This may occur when:
   // 1) The first time this code runs, thus there would be no execution schedule present
@@ -311,13 +319,19 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
       [instance.operationQueue waitUntilAllOperationsAreFinished];
     }
     instance.taskContainers = nil;
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults removeObjectForKey:kSLNExecutionSchedule];
-    [userDefaults synchronize];
+    [instance.userDefaults removeObjectForKey:kSLNExecutionSchedule];
+    [instance.userDefaults synchronize];
   });
 }
 
 #pragma mark - Instance: Execution
+
+- (NSUserDefaults *)userDefaults {
+  if (!_userDefaults) {
+    _userDefaults = [NSUserDefaults standardUserDefaults];
+  }
+  return _userDefaults;
+}
 
 // Executes the list of items.  When the execution of *all* tasks is complete, the completion
 // block is invoked.
@@ -436,9 +450,8 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
   [self.taskContainers enumerateObjectsUsingBlock:^(SLNTaskContainer *t, NSUInteger idx, BOOL *stop) {
     nextExecutionSchedule[[t key]] = [t toDictionary];
   }];
-  NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-  [userDefaults setObject:[NSDictionary dictionaryWithDictionary:nextExecutionSchedule] forKey:kSLNExecutionSchedule];
-  [userDefaults synchronize];
+  [self.userDefaults setObject:[NSDictionary dictionaryWithDictionary:nextExecutionSchedule] forKey:kSLNExecutionSchedule];
+  [self.userDefaults synchronize];
 }
 
 @end

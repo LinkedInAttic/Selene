@@ -40,6 +40,18 @@
 
 /*!
  @abstract
+ Sets the user defaults
+ 
+ @discussion
+ This is used for storing all scheduling data. The scheduling mechanism uses the stored values for calculating
+ and determining the rank and score. If not userDefaults is provided, the standardUserDefaults is used.
+ 
+ @param userDaults
+ */
++ (void)setUserDefaults:(NSUserDefaults *)userDefaults;
+
+/*!
+ @abstract
  Sets the maximum number of concurrent operations the the interval queue can execute.
  
  @discussion

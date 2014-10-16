@@ -146,7 +146,7 @@ static const char * GetEncoding(SEL name) {
 }
 
 - (void)testExample {
-  Class taskA = [self createTaskClassWithPriority:SLNTaskPriorityVeryLow averageResponseTime:25.0 executionTime:0 fetchResult:UIBackgroundFetchResultNewData];
+  Class taskA = [self createTaskClassWithPriority:SLNTaskPriorityVeryLow averageResponseTime:4.0 executionTime:0 fetchResult:UIBackgroundFetchResultNewData];
   Class taskB = [self createTaskClassWithPriority:SLNTaskPriorityVeryHigh averageResponseTime:5.0 executionTime:0 fetchResult:UIBackgroundFetchResultNewData];
   Class taskC = [self createTaskClassWithPriority:SLNTaskPriorityLow averageResponseTime:5.0 executionTime:0 fetchResult:UIBackgroundFetchResultNewData];
   

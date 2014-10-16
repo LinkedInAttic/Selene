@@ -18,22 +18,23 @@
 #error This file must be compiled with ARC. Convert your project to ARC or specify the -fobjc-arc flag.
 #endif
 
-#ifdef DEBUG
-#define SLN_ENABLE_LOGGING 1
-#else
-#define SLN_ENABLE_LOGGING 0
+#ifndef SLN_ENABLE_LOGGING
+  #ifdef DEBUG
+    #define SLN_ENABLE_LOGGING 1
+  #else
+    #define SLN_ENABLE_LOGGING 0
+  #endif
 #endif
 
 #if SLN_ENABLE_LOGGING != 0
-// First, check if we can use Cocoalumberjack for logging
-#ifdef LOG_VERBOSE
-extern int ddLogLevel;
-#define SLNLog(...) DDLogVerbose(__VA_ARGS__)
+  // First, check if we can use Cocoalumberjack for logging
+  #ifdef LOG_VERBOSE
+    #define SLNLog(...) DDLogVerbose(__VA_ARGS__)
+  #else
+    #define SLNLog(...) NSLog(@"%s(%p) %@", __PRETTY_FUNCTION__, self, [NSString stringWithFormat:__VA_ARGS__])
+  #endif
 #else
-#define SLNLog(...) NSLog(@"%s(%p) %@", __PRETTY_FUNCTION__, self, [NSString stringWithFormat:__VA_ARGS__])
-#endif
-#else
-#define SLNLog(...) ((void)0)
+  #define SLNLog(...) ((void)0)
 #endif
 
 // Used as key for storing the last execution time of tsaks, in NSUserDefaults
@@ -78,6 +79,14 @@ static NSInteger const kSLNMaxNumberOfResponseTimesToInclude = 30;
 
 @implementation SLNTaskContainer
 
+/*
+- (NSMutableArray *)recentReponseTimes {
+  @synchronized(self) {
+    return _recentReponseTimes;
+  }
+}
+*/
+
 // Returns the elapsed time between now and its last execution
 - (NSTimeInterval)elapsedTimeSinceLastExecution {
   return [[NSDate date] timeIntervalSince1970] - self.lastExecutionTime;
@@ -108,18 +117,19 @@ static NSInteger const kSLNMaxNumberOfResponseTimesToInclude = 30;
 }
 
 // Calculate a simple moving average of the last kSLNNumberOfReponseTimesToInclude.
-// This gives us a more useful masurement when deciding to schedule the task.
+// This gives us a more useful measurement when deciding to schedule the task.
 // http://en.wikipedia.org/wiki/Moving_average#Simple_moving_average
 //
 - (CGFloat)movingAverageResponseTime {
-  if ([self.recentReponseTimes count] == 0) {
+  NSArray *responseTimes = [self.recentReponseTimes copy];
+  if ([responseTimes count] == 0) {
     return [self.task averageResponseTime];
   }
   CGFloat totalResponseTime = 0;
-  for (NSNumber *responseTime in self.recentReponseTimes) {
+  for (NSNumber *responseTime in responseTimes) {
     totalResponseTime += [responseTime floatValue];
   }
-  return totalResponseTime / [self.recentReponseTimes count];
+  return totalResponseTime / [responseTimes count];
 }
 
 // Deserialization into the current instance, with value of the NSDictionary from NSUserDefaults
@@ -138,7 +148,7 @@ static NSInteger const kSLNMaxNumberOfResponseTimesToInclude = 30;
 // Serialization into dictionary for quick persistence into NSUserDefaults
 - (NSDictionary *)toDictionary {
   return @{
-           kSLNRecentResponseTimes: [NSArray arrayWithArray:self.recentReponseTimes],
+           kSLNRecentResponseTimes: [self.recentReponseTimes copy],
            kSLNLastExecutionTime: @(self.lastExecutionTime)
            };
 }
@@ -148,8 +158,7 @@ static NSInteger const kSLNMaxNumberOfResponseTimesToInclude = 30;
           [self key],
           self.lastExecutionTime,
           [self movingAverageResponseTime],
-          self.score
-          ];
+          self.score];
 }
 
 @end
@@ -337,19 +346,21 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
 // block is invoked.
 - (void)execute:(NSArray *)taskItems {
   __weak __typeof(self) weakSelf = self;
-
+  
   __block UIBackgroundFetchResult finalResult = UIBackgroundFetchResultNoData;
-
-  // Operation which depends on all the other operations. This will serve as a final "completion" trigger
-  NSOperation *finalOp = [NSOperation new];
-
+  
+  NSDate *start = [NSDate date];
+  
+  
+  NSMutableArray *operations = [[NSMutableArray alloc] initWithCapacity:[taskItems count]];
+  
   // Iterate through the list of scheduled operations, and for each one, add its NSOperation
   // to the queue.  Additionally, set a completion block responsible for updating the last sync time
   // of this scheduled operation
-
-  NSDate *start = [NSDate date];
-
-  [taskItems enumerateObjectsUsingBlock:^(SLNTaskContainer *t, NSUInteger idx, BOOL *stop) {
+  dispatch_group_t group = dispatch_group_create();
+  
+  for (SLNTaskContainer *t in taskItems) {
+    dispatch_group_enter(group);
     NSOperation *operation = [t.task operationWithCompletion:^(UIBackgroundFetchResult result) {
       if (result == UIBackgroundFetchResultNewData) {
         finalResult = UIBackgroundFetchResultNewData;
@@ -358,25 +369,25 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
       t.lastExecutionTime = [finish timeIntervalSince1970];
       NSTimeInterval interval = [finish timeIntervalSinceDate:start];
       [t addResponseTime:interval];
+      
+      dispatch_group_leave(group);
     }];
-
-    [finalOp addDependency:operation];
-    [weakSelf.operationQueue addOperation:operation];
-  }];
-
-  [finalOp setCompletionBlock:^{
+    
+    [operations addObject:operation];
+  }
+  
+  [weakSelf.operationQueue addOperations:operations waitUntilFinished:NO];
+  
+  dispatch_group_notify(group, dispatch_get_main_queue(), ^{
     // Update the execution schedule
     [weakSelf save];
     // And we're done!
     if (weakSelf.completion) {
-      dispatch_async(dispatch_get_main_queue(), ^{
-        weakSelf.executing = NO;
-        weakSelf.completion(finalResult);
-      });
+      SLNLog(@"Scheduler completed.");
+      weakSelf.executing = NO;
+      weakSelf.completion(finalResult);
     }
-  }];
-
-  [self.operationQueue addOperation:finalOp];
+  });
 }
 
 // Returns a list of SLNTaskContainer(s) which need to execute.

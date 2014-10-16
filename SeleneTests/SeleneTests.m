@@ -142,7 +142,7 @@ static const char * GetEncoding(SEL name) {
 
 - (void)tearDown {  
   [super tearDown];
-  [self reset];
+  //[self reset];
 }
 
 - (void)testExample {

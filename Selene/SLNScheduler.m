@@ -185,7 +185,7 @@ static NSInteger const kSLNMaxNumberOfResponseTimesToInclude = 30;
 
 @property (nonatomic, getter=isExecuting) BOOL executing;
 
-@property (nonatomic, copy) void (^completion)(UIBackgroundFetchResult);
+@property (nonatomic, strong) NSMutableArray *completionBlocks;
 
 @end
 
@@ -214,6 +214,7 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
   static SLNScheduler *instance;
   dispatch_once(&once, ^{
     instance = [self new];
+    instance.completionBlocks = [NSMutableArray new];
     instance.operationQueue = [NSOperationQueue new];
     [instance.operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
     instance.queue = dispatch_queue_create("selene.scheduler.queue", DISPATCH_QUEUE_SERIAL);
@@ -291,13 +292,14 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
   NSAssert(completion != nil, @"Completion block must exist.");
   
   SLNScheduler *instance = [SLNScheduler sharedInstance];
+  [instance.completionBlocks addObject:[completion copy]];
+  
   if (instance.isExecuting) {
     SLNLog(@"Scheduler already running.");
     return;
   }
 
   instance.executing = YES;
-  instance.completion = [completion copy];
 
   // Retrieve the taks that need to execute
   NSArray *tasks = [instance nextTasks];
@@ -305,8 +307,7 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
   // If there are no operations, then there's nothing to do.  Simply short-cicuit.
   if ([tasks count] == 0) {
     dispatch_async(dispatch_get_main_queue(), ^{
-      instance.executing = NO;
-      instance.completion(UIBackgroundFetchResultNoData);
+      [instance completeWithResult:UIBackgroundFetchResultNoData];
     });
     return;
   }
@@ -322,7 +323,7 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
 
 + (void)reset {
   SLNScheduler *instance = [SLNScheduler sharedInstance];
-
+  
   dispatch_async(instance.queue, ^{
     if ([instance.operationQueue operationCount] > 0) {
       [instance.operationQueue waitUntilAllOperationsAreFinished];
@@ -330,10 +331,20 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
     instance.taskContainers = nil;
     [instance.userDefaults removeObjectForKey:kSLNExecutionSchedule];
     [instance.userDefaults synchronize];
+    [instance.completionBlocks removeAllObjects];
   });
 }
 
 #pragma mark - Instance: Execution
+
+- (void)completeWithResult:(UIBackgroundFetchResult)result {
+  SLNLog(@"Scheduled tasks completed with result: %lu", result);
+  self.executing = NO;
+  for (void (^block)(UIBackgroundFetchResult) in self.completionBlocks) {
+    block(UIBackgroundFetchResultNoData);
+  }
+  [self.completionBlocks removeAllObjects];
+}
 
 - (NSUserDefaults *)userDefaults {
   if (!_userDefaults) {
@@ -350,7 +361,6 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
   __block UIBackgroundFetchResult finalResult = UIBackgroundFetchResultNoData;
   
   NSDate *start = [NSDate date];
-  
   
   NSMutableArray *operations = [[NSMutableArray alloc] initWithCapacity:[taskItems count]];
   
@@ -382,11 +392,7 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
     // Update the execution schedule
     [weakSelf save];
     // And we're done!
-    if (weakSelf.completion) {
-      SLNLog(@"Scheduler completed.");
-      weakSelf.executing = NO;
-      weakSelf.completion(finalResult);
-    }
+    [weakSelf completeWithResult:finalResult];
   });
 }
 

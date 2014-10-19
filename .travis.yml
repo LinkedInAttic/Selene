@@ -1,5 +1,6 @@
 language: objective-c
 before_install:
+    - brew uninstall xctool
     - brew update
     - brew install xctool
 script: xctool -workspace Selene.xcworkspace -scheme Selene -sdk iphonesimulator build test

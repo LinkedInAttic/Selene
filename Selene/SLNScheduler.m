@@ -19,22 +19,22 @@
 #endif
 
 #ifndef SLN_ENABLE_LOGGING
-  #ifdef DEBUG
-    #define SLN_ENABLE_LOGGING 1
-  #else
-    #define SLN_ENABLE_LOGGING 0
-  #endif
+#ifdef DEBUG
+#define SLN_ENABLE_LOGGING 1
+#else
+#define SLN_ENABLE_LOGGING 0
+#endif
 #endif
 
 #if SLN_ENABLE_LOGGING != 0
-  // First, check if we can use Cocoalumberjack for logging
-  #ifdef LOG_VERBOSE
-    #define SLNLog(...) DDLogVerbose(__VA_ARGS__)
-  #else
-    #define SLNLog(...) NSLog(@"%s(%p) %@", __PRETTY_FUNCTION__, self, [NSString stringWithFormat:__VA_ARGS__])
-  #endif
+// First, check if we can use Cocoalumberjack for logging
+#ifdef LOG_VERBOSE
+#define SLNLog(...) DDLogVerbose(__VA_ARGS__)
 #else
-  #define SLNLog(...) ((void)0)
+#define SLNLog(...) NSLog(@"%s(%p) %@", __PRETTY_FUNCTION__, self, [NSString stringWithFormat:__VA_ARGS__])
+#endif
+#else
+#define SLNLog(...) ((void)0)
 #endif
 
 // Used as key for storing the last execution time of tsaks, in NSUserDefaults
@@ -91,9 +91,9 @@ static NSInteger const kSLNMaxNumberOfResponseTimesToInclude = 30;
 
 - (void)addResponseTime:(CGFloat)responseTime {
   [self.recentReponseTimes addObject:@(responseTime)];
-
+  
   NSInteger numberOfReponseTimesToInclude = kSLNDefaultNumberOfResponseTimesToInclude;
-
+  
   if ([[self task] respondsToSelector:@selector(numberOfPeriodsForResponseTime)]) {
     numberOfReponseTimesToInclude = [self.task numberOfPeriodsForResponseTime];
     if (numberOfReponseTimesToInclude < kSLNMinNumberOfResponseTimesToInclude) {
@@ -102,7 +102,7 @@ static NSInteger const kSLNMaxNumberOfResponseTimesToInclude = 30;
       numberOfReponseTimesToInclude = kSLNMaxNumberOfResponseTimesToInclude;
     }
   }
-
+  
   if ([self.recentReponseTimes count] > numberOfReponseTimesToInclude) {
     [self.recentReponseTimes removeObjectAtIndex:0];
   }
@@ -176,6 +176,8 @@ static NSInteger const kSLNMaxNumberOfResponseTimesToInclude = 30;
 
 @property (nonatomic, strong) NSMutableArray *completionBlocks;
 
+@property (nonatomic, strong) dispatch_queue_t dispatchQueue;
+
 @end
 
 @implementation SLNScheduler
@@ -205,6 +207,7 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
     instance = [self new];
     instance.completionBlocks = [NSMutableArray new];
     instance.operationQueue = [NSOperationQueue new];
+    instance.dispatchQueue = dispatch_queue_create("com.linkedin.selene.queue", DISPATCH_QUEUE_SERIAL);
     [instance.operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
   });
   return instance;
@@ -214,61 +217,68 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
 
 + (void)setUserDefaults:(NSUserDefaults *)userDaults {
   SLNScheduler *instance = [SLNScheduler sharedInstance];
-  instance.userDefaults = userDaults;
+  dispatch_sync(instance.dispatchQueue, ^{
+    instance.userDefaults = userDaults;
+  });
 }
 
 + (void)setMinimumBackgroundFetchInterval:(NSTimeInterval)minimumBackgroundFetchInterval {
   SLNScheduler *instance = [SLNScheduler sharedInstance];
-  instance.minimumBackgroundFetchInterval = minimumBackgroundFetchInterval;
-  [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:minimumBackgroundFetchInterval];
+  dispatch_sync(instance.dispatchQueue, ^{
+    instance.minimumBackgroundFetchInterval = minimumBackgroundFetchInterval;
+    [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:minimumBackgroundFetchInterval];
+  });
 }
 
 + (void)setMaxConcurrentOperationCount:(NSInteger)maxConcurrentOperationCount {
   SLNScheduler *instance = [SLNScheduler sharedInstance];
-  [instance.operationQueue setMaxConcurrentOperationCount:maxConcurrentOperationCount];
+  dispatch_sync(instance.dispatchQueue, ^{
+    [instance.operationQueue setMaxConcurrentOperationCount:maxConcurrentOperationCount];
+  });
 }
 
 #pragma mark - Scheduling/Execution
 
 + (void)scheduleTasks:(NSArray *)tasks {
   SLNScheduler *instance = [SLNScheduler sharedInstance];
-  
-  // Retrieve the execution schedule from the user defaults.  Then:
-  // 1) Create the task
-  // 2) Iterate through the list of passed in scheduled tasks, and deserialize its content into the appropriate
-  //    SLNTaskContainer
-  NSDictionary *executionSchedule = [instance.userDefaults dictionaryForKey:kSLNExecutionSchedule];
-
-  // This flag dictates where the execution schedule should be saved.  This may occur when:
-  // 1) The first time this code runs, thus there would be no execution schedule present
-  // 2) When new tasks are inserted, thus they do not exist in the execution schedule.
-  __block BOOL hasChanges = NO;
-
-  NSMutableArray *taskContainers = [NSMutableArray new];
-
-  [tasks enumerateObjectsUsingBlock:^(id<SLNTaskProtocol> task, NSUInteger idx, BOOL *stop) {
-    NSAssert(([task priority] >= SLNTaskPriorityVeryLow) && [task priority] <= SLNTaskPriorityVeryHigh, @"Priority must be between [SLNTaskPriorityVeryLow,SLNTaskPriorityVeryHigh]");
-    NSAssert(([task averageResponseTime] >= 0) && [task averageResponseTime] <= kSLNAvailableTime, @"averageResponseTime must be in the range of [0,30]");
-
-    SLNTaskContainer *t = [SLNTaskContainer new];
-    t.task = task;
-
-    NSDictionary *schedule = [executionSchedule objectForKey:[t key]];
-
-    [t updateWithDictionary:schedule];
-
-    if (!schedule) {
-      hasChanges = YES;
+  dispatch_sync(instance.dispatchQueue, ^{
+    // Retrieve the execution schedule from the user defaults.  Then:
+    // 1) Create the task
+    // 2) Iterate through the list of passed in scheduled tasks, and deserialize its content into the appropriate
+    //    SLNTaskContainer
+    NSDictionary *executionSchedule = [instance.userDefaults dictionaryForKey:kSLNExecutionSchedule];
+    
+    // This flag dictates where the execution schedule should be saved.  This may occur when:
+    // 1) The first time this code runs, thus there would be no execution schedule present
+    // 2) When new tasks are inserted, thus they do not exist in the execution schedule.
+    __block BOOL hasChanges = NO;
+    
+    NSMutableArray *taskContainers = [NSMutableArray new];
+    
+    [tasks enumerateObjectsUsingBlock:^(id<SLNTaskProtocol> task, NSUInteger idx, BOOL *stop) {
+      NSAssert(([task priority] >= SLNTaskPriorityVeryLow) && [task priority] <= SLNTaskPriorityVeryHigh, @"Priority must be between [SLNTaskPriorityVeryLow,SLNTaskPriorityVeryHigh]");
+      NSAssert(([task averageResponseTime] >= 0) && [task averageResponseTime] <= kSLNAvailableTime, @"averageResponseTime must be in the range of [0,30]");
+      
+      SLNTaskContainer *t = [SLNTaskContainer new];
+      t.task = task;
+      
+      NSDictionary *schedule = [executionSchedule objectForKey:[t key]];
+      
+      [t updateWithDictionary:schedule];
+      
+      if (!schedule) {
+        hasChanges = YES;
+      }
+      
+      [taskContainers addObject:t];
+    }];
+    
+    instance.taskContainers = taskContainers;
+    
+    if (hasChanges) {
+      [instance save];
     }
-
-    [taskContainers addObject:t];
-  }];
-
-  instance.taskContainers = taskContainers;
-
-  if (hasChanges) {
-    [instance save];
-  }
+  });
 }
 
 + (void)scheduleNow:(id<SLNTaskProtocol>)task {
@@ -278,27 +288,29 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
 
 + (void)startWithCompletion:(void (^)(UIBackgroundFetchResult))completion {
   NSAssert(completion != nil, @"Completion block must exist.");
-  
   SLNScheduler *instance = [SLNScheduler sharedInstance];
-  [instance.completionBlocks addObject:[completion copy]];
   
-  if (instance.isExecuting) {
-    SLNLog(@"Scheduler already running.");
-    return;
-  }
-
-  instance.executing = YES;
-
-  // Retrieve the taks that need to execute
-  NSArray *tasks = [instance nextTasks];
-
-  // If there are no operations, then there's nothing to do.  Simply short-cicuit.
-  if ([tasks count] == 0) {
-    [instance completeWithResult:UIBackgroundFetchResultNoData];
-    return;
-  }
-
-  [instance execute:tasks];
+  dispatch_async(instance.dispatchQueue, ^{
+    [instance.completionBlocks addObject:[completion copy]];
+    
+    if (instance.isExecuting) {
+      SLNLog(@"Scheduler already running.");
+      return;
+    }
+    
+    instance.executing = YES;
+    
+    // Retrieve the taks that need to execute
+    NSArray *tasks = [instance nextTasks];
+    
+    // If there are no operations, then there's nothing to do.  Simply short-cicuit.
+    if ([tasks count] == 0) {
+      [instance completeWithResult:UIBackgroundFetchResultNoData];
+      return;
+    }
+    
+    [instance execute:tasks];
+  });
 }
 
 + (void)stop {
@@ -307,13 +319,15 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
 
 + (void)reset {
   SLNScheduler *instance = [SLNScheduler sharedInstance];
-  if ([instance.operationQueue operationCount] > 0) {
-    [instance.operationQueue waitUntilAllOperationsAreFinished];
-  }
-  instance.taskContainers = nil;
-  [instance.userDefaults removeObjectForKey:kSLNExecutionSchedule];
-  [instance.userDefaults synchronize];
-  [instance.completionBlocks removeAllObjects];
+  dispatch_sync(instance.dispatchQueue, ^{
+    if ([instance.operationQueue operationCount] > 0) {
+      [instance.operationQueue waitUntilAllOperationsAreFinished];
+    }
+    instance.taskContainers = nil;
+    [instance.userDefaults removeObjectForKey:kSLNExecutionSchedule];
+    [instance.userDefaults synchronize];
+    [instance.completionBlocks removeAllObjects];
+  });
 }
 
 #pragma mark - Instance: Execution
@@ -356,23 +370,23 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
   for (SLNTaskContainer *t in taskItems) {
     dispatch_group_enter(group);
     NSOperation *operation = [t.task operationWithCompletion:^(UIBackgroundFetchResult result) {
-      if (result == UIBackgroundFetchResultNewData) {
-        finalResult = UIBackgroundFetchResultNewData;
-      }
-      NSDate *finish = [NSDate date];
-      t.lastExecutionTime = [finish timeIntervalSince1970];
-      NSTimeInterval interval = [finish timeIntervalSinceDate:start];
-      [t addResponseTime:interval];
-      
-      dispatch_group_leave(group);
+      dispatch_async(self.dispatchQueue, ^{
+        if (result == UIBackgroundFetchResultNewData) {
+          finalResult = UIBackgroundFetchResultNewData;
+        }
+        NSDate *finish = [NSDate date];
+        t.lastExecutionTime = [finish timeIntervalSince1970];
+        NSTimeInterval interval = [finish timeIntervalSinceDate:start];
+        [t addResponseTime:interval];
+        dispatch_group_leave(group);
+      });
     }];
-    
     [operations addObject:operation];
   }
   
   [weakSelf.operationQueue addOperations:operations waitUntilFinished:NO];
   
-  dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+  dispatch_group_notify(group, self.dispatchQueue, ^{
     // Update the execution schedule
     [weakSelf save];
     // And we're done!
@@ -409,17 +423,17 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
 - (NSArray *)nextTasks {
   CGFloat minElapsedTimeSinceLastExecution = 0;
   __block CGFloat maxElapsedTimeSinceLastExecution = 0;
-
+  
   // Calculate the max elapsed time
   [self.taskContainers enumerateObjectsUsingBlock:^(SLNTaskContainer *t, NSUInteger idx, BOOL *stop) {
     maxElapsedTimeSinceLastExecution = MAX([t elapsedTimeSinceLastExecution], maxElapsedTimeSinceLastExecution);
   }];
-
+  
   // Calculate the score for every task
   [self.taskContainers enumerateObjectsUsingBlock:^(SLNTaskContainer *t, NSUInteger idx, BOOL *stop) {
     t.score = Score([t.task priority], [t elapsedTimeSinceLastExecution], minElapsedTimeSinceLastExecution, maxElapsedTimeSinceLastExecution);
   }];
-
+  
   // Sort the tasks by score
   NSArray *sortedTasksByScore = [self.taskContainers sortedArrayUsingComparator:^NSComparisonResult(SLNTaskContainer *obj1, SLNTaskContainer *obj2) {
     if (obj1.score > obj2.score) {
@@ -430,11 +444,11 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
       return NSOrderedDescending;
     }
   }];
-
+  
   // Determine which tasks to run, by looking at their cost
   NSMutableArray *scheduledTasks = [[NSMutableArray alloc] init];
   __block CGFloat totalResponseTime = 0.0;
-
+  
   [sortedTasksByScore enumerateObjectsUsingBlock:^(SLNTaskContainer *t, NSUInteger idx, BOOL *stop) {
     CGFloat average = [t movingAverageResponseTime];
     if (totalResponseTime + average <= kSLNAvailableTime) {
@@ -442,19 +456,17 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
       [scheduledTasks addObject:t];
     }
   }];
-
+  
   return scheduledTasks;
 }
 
 - (void)save {
-  @synchronized(self) {
-    NSMutableDictionary *nextExecutionSchedule = [NSMutableDictionary new];
-    for (SLNTaskContainer *t in self.taskContainers) {
-      nextExecutionSchedule[[t key]] = [t toDictionary];
-    }
-    [self.userDefaults setObject:[NSDictionary dictionaryWithDictionary:nextExecutionSchedule] forKey:kSLNExecutionSchedule];
-    [self.userDefaults synchronize];
+  NSMutableDictionary *nextExecutionSchedule = [NSMutableDictionary new];
+  for (SLNTaskContainer *t in self.taskContainers) {
+    nextExecutionSchedule[[t key]] = [t toDictionary];
   }
+  [self.userDefaults setObject:[NSDictionary dictionaryWithDictionary:nextExecutionSchedule] forKey:kSLNExecutionSchedule];
+  [self.userDefaults synchronize];
 }
 
 @end

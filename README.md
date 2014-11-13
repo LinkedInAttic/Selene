@@ -1,6 +1,6 @@
-# Selene
+![Selene: Background Task Scheduler](https://raw.githubusercontent.com/linkedin/Selene/master/selene-banner.png)
 
-Selene is an iOS library which schedules the execution of tasks on a [background fetch](https://developer.apple.com/library/ios/documentation/iphone/conceptual/iphoneosprogrammingguide/ManagingYourApplicationsFlow/ManagingYourApplicationsFlow.html).
+Selene is an iOS library which schedules the execution of tasks on a [background fetch](https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/BackgroundExecution/BackgroundExecution.html#//apple_ref/doc/uid/TP40007072-CH4-SW56).
 
 [![Build Status](https://travis-ci.org/linkedin/Selene.svg?branch=master)](http://travis-ci.org/linkedin/Selene)
 

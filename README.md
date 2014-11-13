@@ -9,7 +9,7 @@ Selene is an iOS library which schedules the execution of tasks on a [background
 ## CocoaPods
 
 Add to your Podfile:
-pod Selene
+`pod Selene`
 
 ## Submodule
 

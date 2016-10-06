@@ -333,7 +333,7 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
 #pragma mark - Instance: Execution
 
 - (void)completeWithResult:(UIBackgroundFetchResult)result {
-  SLNLog(@"Scheduled tasks completed with result: %lu", result);
+  SLNLog(@"Scheduled tasks completed with result: %lu", (unsigned long)result);
   __weak __typeof(self) weakSelf = self;
   self.executing = NO;
   dispatch_async(dispatch_get_main_queue(), ^{

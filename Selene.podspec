@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name          = "Selene"
-  s.version      = "1.0.6"
+  s.version      = "1.0.7"
   s.summary      = "Selene is a library for scheduling background tasks."
   s.description  = <<-DESC
                    Selene calculates a task's goodness to determine whether the task should be executed.

@@ -59,8 +59,7 @@ typedef NS_ENUM(NSInteger, SLNTaskPriority) {
  }
  @endcode
 
- @param
- completion
+ @param completion Completion block for the operation.
 
  @return
  The NSOperation which should execute as part of the scheduled background task.
@@ -108,7 +107,7 @@ typedef NS_ENUM(NSInteger, SLNTaskPriority) {
  Min: 0
  Max: 30
  */
-+ (NSInteger)numberOfPeriodsForResponseTime;
++ (NSUInteger)numberOfPeriodsForResponseTime;
 
 @end
 

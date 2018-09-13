@@ -51,9 +51,9 @@ static CGFloat const kSLNAvailableTime = 30.0;
 
 // Total number of response times to store for a given task.
 // See http://en.wikipedia.org/wiki/Moving_average#Simple_moving_average
-static NSInteger const kSLNDefaultNumberOfResponseTimesToInclude = 3;
-static NSInteger const kSLNMinNumberOfResponseTimesToInclude = 0;
-static NSInteger const kSLNMaxNumberOfResponseTimesToInclude = 30;
+static NSUInteger const kSLNDefaultNumberOfResponseTimesToInclude = 3;
+static NSUInteger const kSLNMinNumberOfResponseTimesToInclude = 0;
+static NSUInteger const kSLNMaxNumberOfResponseTimesToInclude = 30;
 
 /******/
 
@@ -89,10 +89,10 @@ static NSInteger const kSLNMaxNumberOfResponseTimesToInclude = 30;
   return [self.task identifier];
 }
 
-- (void)addResponseTime:(CGFloat)responseTime {
+- (void)addResponseTime:(NSTimeInterval)responseTime {
   [self.recentReponseTimes addObject:@(responseTime)];
   
-  NSInteger numberOfReponseTimesToInclude = kSLNDefaultNumberOfResponseTimesToInclude;
+  NSUInteger numberOfReponseTimesToInclude = kSLNDefaultNumberOfResponseTimesToInclude;
   
   if ([[self task] respondsToSelector:@selector(numberOfPeriodsForResponseTime)]) {
     numberOfReponseTimesToInclude = [self.task numberOfPeriodsForResponseTime];
@@ -187,14 +187,14 @@ static NSInteger const kSLNMaxNumberOfResponseTimesToInclude = 30;
 // Returns a normalized value
 // http://en.wikipedia.org/wiki/Normalization_(statistics)
 //
-static inline double Normalize(double value, double min, double max) {
-  return ((value - min)/(max == min ? 1 : (max - min)));
+static inline CGFloat Normalize(NSTimeInterval value, NSTimeInterval min, NSTimeInterval max) {
+  return (CGFloat)((value - min)/(max == min ? 1 : (max - min)));
 };
 
 // Calculates the score based on priority and last execution time.
 // Currently, this is a pretty rudimentary operation: (normalized priority) * (normalized last execution time)
 //
-static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTimeInterval minTime, NSTimeInterval maxTime) {
+static inline CGFloat Score(SLNTaskPriority priority, NSTimeInterval time, NSTimeInterval minTime, NSTimeInterval maxTime) {
   return Normalize(priority, 0, SLNTaskPriorityVeryHigh) * Normalize(time, minTime, maxTime);
 };
 
@@ -255,7 +255,7 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
     
     NSMutableArray *taskContainers = [NSMutableArray new];
     
-    [tasks enumerateObjectsUsingBlock:^(id<SLNTaskProtocol> task, NSUInteger idx, BOOL *stop) {
+    [tasks enumerateObjectsUsingBlock:^(id<SLNTaskProtocol> task, NSUInteger __unused idx, BOOL * __unused stop) {
       NSAssert(([task priority] >= SLNTaskPriorityVeryLow) && [task priority] <= SLNTaskPriorityVeryHigh, @"Priority must be between [SLNTaskPriorityVeryLow,SLNTaskPriorityVeryHigh]");
       NSAssert(([task averageResponseTime] >= 0) && [task averageResponseTime] <= kSLNAvailableTime, @"averageResponseTime must be in the range of [0,30]");
       
@@ -281,7 +281,7 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
   });
 }
 
-+ (void)scheduleNow:(id<SLNTaskProtocol>)task {
++ (void)scheduleNow:(id<SLNTaskProtocol>)__unused task {
   // Purposely left blank. We'll implement this at a later date.  For now this isn't needed,
   // but is left here as a reminder of good things to come.
 }
@@ -337,10 +337,11 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
   __weak __typeof(self) weakSelf = self;
   self.executing = NO;
   dispatch_async(dispatch_get_main_queue(), ^{
-    for (void (^block)(UIBackgroundFetchResult) in weakSelf.completionBlocks) {
+    __strong typeof(self) strongSelf = weakSelf;
+    for (void (^block)(UIBackgroundFetchResult) in strongSelf.completionBlocks) {
       block(UIBackgroundFetchResultNoData);
     }
-    [weakSelf.completionBlocks removeAllObjects];
+    [strongSelf.completionBlocks removeAllObjects];
   });
 }
 
@@ -387,10 +388,11 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
   [weakSelf.operationQueue addOperations:operations waitUntilFinished:NO];
   
   dispatch_group_notify(group, self.dispatchQueue, ^{
+    __strong typeof(self) strongSelf = weakSelf;
     // Update the execution schedule
-    [weakSelf save];
+    [strongSelf save];
     // And we're done!
-    [weakSelf completeWithResult:finalResult];
+    [strongSelf completeWithResult:finalResult];
   });
 }
 
@@ -421,16 +423,16 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
 // is higher in the list.
 //
 - (NSArray *)nextTasks {
-  CGFloat minElapsedTimeSinceLastExecution = 0;
-  __block CGFloat maxElapsedTimeSinceLastExecution = 0;
+  NSTimeInterval minElapsedTimeSinceLastExecution = 0;
+  __block NSTimeInterval maxElapsedTimeSinceLastExecution = 0;
   
   // Calculate the max elapsed time
-  [self.taskContainers enumerateObjectsUsingBlock:^(SLNTaskContainer *t, NSUInteger idx, BOOL *stop) {
+  [self.taskContainers enumerateObjectsUsingBlock:^(SLNTaskContainer *t, NSUInteger __unused idx, BOOL * __unused stop) {
     maxElapsedTimeSinceLastExecution = MAX([t elapsedTimeSinceLastExecution], maxElapsedTimeSinceLastExecution);
   }];
   
   // Calculate the score for every task
-  [self.taskContainers enumerateObjectsUsingBlock:^(SLNTaskContainer *t, NSUInteger idx, BOOL *stop) {
+  [self.taskContainers enumerateObjectsUsingBlock:^(SLNTaskContainer *t, NSUInteger __unused idx, BOOL * __unused stop) {
     t.score = Score([t.task priority], [t elapsedTimeSinceLastExecution], minElapsedTimeSinceLastExecution, maxElapsedTimeSinceLastExecution);
   }];
   
@@ -449,7 +451,7 @@ static inline double Score(SLNTaskPriority priority, NSTimeInterval time, NSTime
   NSMutableArray *scheduledTasks = [[NSMutableArray alloc] init];
   __block CGFloat totalResponseTime = 0.0;
   
-  [sortedTasksByScore enumerateObjectsUsingBlock:^(SLNTaskContainer *t, NSUInteger idx, BOOL *stop) {
+  [sortedTasksByScore enumerateObjectsUsingBlock:^(SLNTaskContainer *t, NSUInteger __unused idx, BOOL * __unused stop) {
     CGFloat average = [t movingAverageResponseTime];
     if (totalResponseTime + average <= kSLNAvailableTime) {
       totalResponseTime += average;

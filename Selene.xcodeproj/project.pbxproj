@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E2003E7AFA4BB27A503170B /* libPods-Selene.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 71E322340C664F634C0A2337 /* libPods-Selene.a */; };
 		A10ADD0A19BB7BC60081601C /* Selene.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A10ADD0919BB7BC60081601C /* Selene.h */; };
 		A146DF7419BB7EBB00D1674E /* SeleneTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A146DF7319BB7EBB00D1674E /* SeleneTests.m */; };
 		A187F87019BB800C00445D76 /* libSelene.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A10ADD0619BB7BC60081601C /* libSelene.a */; };
 		A1AC4A5819BB7CDC003AEDEF /* SLNScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = A1AC4A5619BB7CDC003AEDEF /* SLNScheduler.m */; };
 		A1AC4A5A19BB7D29003AEDEF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1AC4A5919BB7D29003AEDEF /* UIKit.framework */; };
 		A1AC4A5C19BB7D30003AEDEF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1AC4A5B19BB7D30003AEDEF /* Foundation.framework */; };
+		DB6F1E73FBDA27DD4BBDE730 /* libPods-SeleneTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 01304CDE7D643BC63A196EE9 /* libPods-SeleneTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +41,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		01304CDE7D643BC63A196EE9 /* libPods-SeleneTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SeleneTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		28C411DEDEC34C38461EF59F /* Pods-SeleneTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SeleneTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SeleneTests/Pods-SeleneTests.debug.xcconfig"; sourceTree = "<group>"; };
+		71E322340C664F634C0A2337 /* libPods-Selene.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Selene.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10ADD0619BB7BC60081601C /* libSelene.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSelene.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10ADD0919BB7BC60081601C /* Selene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Selene.h; sourceTree = "<group>"; };
 		A10ADD1119BB7BC60081601C /* SeleneTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SeleneTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -50,6 +55,9 @@
 		A1AC4A5919BB7D29003AEDEF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A1AC4A5B19BB7D30003AEDEF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A1AC4A5E19BB7D59003AEDEF /* Selene-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Selene-Prefix.pch"; sourceTree = "<group>"; };
+		B06CE0C4C7A008F6C63DCC35 /* Pods-Selene.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Selene.release.xcconfig"; path = "Pods/Target Support Files/Pods-Selene/Pods-Selene.release.xcconfig"; sourceTree = "<group>"; };
+		C7E40E522E4DCDA253ED4DAB /* Pods-Selene.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Selene.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Selene/Pods-Selene.debug.xcconfig"; sourceTree = "<group>"; };
+		CC084F3BCF5971FB30A918E3 /* Pods-SeleneTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SeleneTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SeleneTests/Pods-SeleneTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +67,7 @@
 			files = (
 				A1AC4A5C19BB7D30003AEDEF /* Foundation.framework in Frameworks */,
 				A1AC4A5A19BB7D29003AEDEF /* UIKit.framework in Frameworks */,
+				1E2003E7AFA4BB27A503170B /* libPods-Selene.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,12 +76,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				A187F87019BB800C00445D76 /* libSelene.a in Frameworks */,
+				DB6F1E73FBDA27DD4BBDE730 /* libPods-SeleneTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		15A61601E71D669010443B84 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				C7E40E522E4DCDA253ED4DAB /* Pods-Selene.debug.xcconfig */,
+				B06CE0C4C7A008F6C63DCC35 /* Pods-Selene.release.xcconfig */,
+				28C411DEDEC34C38461EF59F /* Pods-SeleneTests.debug.xcconfig */,
+				CC084F3BCF5971FB30A918E3 /* Pods-SeleneTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		A10ADCFD19BB7BC60081601C = {
 			isa = PBXGroup;
 			children = (
@@ -80,6 +101,7 @@
 				A10ADD1219BB7BC60081601C /* SeleneTests */,
 				A1AC4A5D19BB7D37003AEDEF /* Frameworks */,
 				A10ADD0719BB7BC60081601C /* Products */,
+				15A61601E71D669010443B84 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -134,6 +156,8 @@
 			children = (
 				A1AC4A5B19BB7D30003AEDEF /* Foundation.framework */,
 				A1AC4A5919BB7D29003AEDEF /* UIKit.framework */,
+				71E322340C664F634C0A2337 /* libPods-Selene.a */,
+				01304CDE7D643BC63A196EE9 /* libPods-SeleneTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -145,6 +169,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A10ADD1719BB7BC60081601C /* Build configuration list for PBXNativeTarget "Selene" */;
 			buildPhases = (
+				81AA89D1EBE683A63B94A79A /* [CP] Check Pods Manifest.lock */,
 				A10ADD0219BB7BC60081601C /* Sources */,
 				A10ADD0319BB7BC60081601C /* Frameworks */,
 				A10ADD0419BB7BC60081601C /* CopyFiles */,
@@ -162,6 +187,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A10ADD1A19BB7BC60081601C /* Build configuration list for PBXNativeTarget "SeleneTests" */;
 			buildPhases = (
+				619AA4B3D0E89C57CEF0131E /* [CP] Check Pods Manifest.lock */,
 				A10ADD0D19BB7BC60081601C /* Sources */,
 				A10ADD0E19BB7BC60081601C /* Frameworks */,
 				A10ADD0F19BB7BC60081601C /* Resources */,
@@ -183,7 +209,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = SLN;
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = LinkedIn;
 				TargetAttributes = {
 					A10ADD0519BB7BC60081601C = {
@@ -222,6 +248,45 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		619AA4B3D0E89C57CEF0131E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SeleneTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		81AA89D1EBE683A63B94A79A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Selene-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		A10ADD0219BB7BC60081601C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -258,30 +323,66 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES_ERROR;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES_ERROR;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_CXX0X_EXTENSIONS = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES_ERROR;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES_ERROR;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				"GCC_WARN_64_TO_32_BIT_CONVERSION[arch=*64]" = YES_ERROR;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -298,24 +399,59 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES_ERROR;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES_ERROR;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_CXX0X_EXTENSIONS = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES_ERROR;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES_ERROR;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				"GCC_WARN_64_TO_32_BIT_CONVERSION[arch=*64]" = YES_ERROR;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -326,6 +462,7 @@
 		};
 		A10ADD1819BB7BC60081601C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C7E40E522E4DCDA253ED4DAB /* Pods-Selene.debug.xcconfig */;
 			buildSettings = {
 				GCC_PREFIX_HEADER = "Selene/Selene-Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
@@ -336,6 +473,7 @@
 		};
 		A10ADD1919BB7BC60081601C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B06CE0C4C7A008F6C63DCC35 /* Pods-Selene.release.xcconfig */;
 			buildSettings = {
 				GCC_PREFIX_HEADER = "Selene/Selene-Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
@@ -346,11 +484,8 @@
 		};
 		A10ADD1B19BB7BC60081601C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 28C411DEDEC34C38461EF59F /* Pods-SeleneTests.debug.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
 				GCC_PREFIX_HEADER = "Selene/Selene-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -358,20 +493,19 @@
 				);
 				INFOPLIST_FILE = SeleneTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.linkedin.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
 		A10ADD1C19BB7BC60081601C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CC084F3BCF5971FB30A918E3 /* Pods-SeleneTests.release.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
 				GCC_PREFIX_HEADER = "Selene/Selene-Prefix.pch";
 				INFOPLIST_FILE = SeleneTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.linkedin.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

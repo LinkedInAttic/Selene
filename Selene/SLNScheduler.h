@@ -46,7 +46,7 @@
  This is used for storing all scheduling data. The scheduling mechanism uses the stored values for calculating
  and determining the rank and score. If no userDefaults is provided, the standardUserDefaults is used.
  
- @param userDaults
+ @param userDefaults User defaults object to store scheduling data.
  */
 + (void)setUserDefaults:(NSUserDefaults *)userDefaults;
 
@@ -58,7 +58,7 @@
  If you specify the value NSOperationQueueDefaultMaxConcurrentOperationCount (which is recommended),
  the maximum number of operations can change dynamically based on system conditions.
  
- @param count
+ @param maxConcurrentOperationCount Maximum number of concurrent operations
  The maximum number of concurrent operations. Specify the value NSOperationQueueDefaultMaxConcurrentOperationCount
  if you want the receiver to choose an appropriate value based on the number of available processors and other relevant factors.
  */
@@ -110,7 +110,7 @@
  @abstract
  Schedules an background task to execute immediately, regardless of its priority and/or cost
  
- @param operation
+ @param task Background task to be scheduled immediately.
  A class comforming to LCNScheduledBackgroundTaskProtocol
  */
 + (void)scheduleNow:(id<SLNTaskProtocol>)task;

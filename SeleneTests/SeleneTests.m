@@ -38,7 +38,7 @@ do { \
 + (NSString *)identifier {
   return @"";
 }
-+ (NSOperation *)operationWithCompletion:(SLNTaskCompletion_t)completion {
++ (NSOperation *)operationWithCompletion:(SLNTaskCompletion_t)__unused completion {
   return nil;
 }
 + (CGFloat)averageResponseTime {
@@ -47,7 +47,7 @@ do { \
 + (SLNTaskPriority)priority {
   return 0;
 }
-+ (NSInteger)numberOfPeriodsForResponseTime {
++ (NSUInteger)numberOfPeriodsForResponseTime {
   return 5;
 }
 @end
@@ -66,11 +66,11 @@ static const char * GetEncoding(SEL name) {
 - (Class<SLNTaskProtocol>)createTaskClassWithPriority:(SLNTaskPriority)priority
                                   averageResponseTime:(CGFloat)averageResponseTime
                                         executionTime:(CGFloat)executionTime
-                       numberOfPeriodsForResponseTime:(CGFloat)numberOfPeriodsForResponseTime
+                       numberOfPeriodsForResponseTime:(NSUInteger)numberOfPeriodsForResponseTime
                                           fetchResult:(UIBackgroundFetchResult)fetchResult {
   Class taskClass = [self createTaskClassWithPriority:priority averageResponseTime:averageResponseTime executionTime:executionTime fetchResult:fetchResult];
   
-  class_addMethod(object_getClass(taskClass), @selector(numberOfPeriodsForResponseTime), imp_implementationWithBlock(^NSInteger(id self){
+  class_addMethod(object_getClass(taskClass), @selector(numberOfPeriodsForResponseTime), imp_implementationWithBlock(^NSUInteger(id __unused innerSelf){
     return numberOfPeriodsForResponseTime;
   }), GetEncoding(@selector(numberOfPeriodsForResponseTime)));
   
@@ -90,11 +90,11 @@ static const char * GetEncoding(SEL name) {
   class_conformsToProtocol(taskClass, @protocol(SLNTaskProtocol));
   
   //Add class methods
-  class_addMethod(object_getClass(taskClass), @selector(identifier), imp_implementationWithBlock(^NSString*(id self) {
+  class_addMethod(object_getClass(taskClass), @selector(identifier), imp_implementationWithBlock(^NSString*(id __unused innerSelf) {
     return NSStringFromClass([self class]);
   }), GetEncoding(@selector(identifier)));
   
-  class_addMethod(object_getClass(taskClass), @selector(operationWithCompletion:), imp_implementationWithBlock(^NSOperation*(id self, SLNTaskCompletion_t completion) {
+  class_addMethod(object_getClass(taskClass), @selector(operationWithCompletion:), imp_implementationWithBlock(^NSOperation*(id __unused innerSelf, SLNTaskCompletion_t completion) {
     NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
       dispatch_semaphore_t sema = dispatch_semaphore_create(0);
       dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
@@ -109,11 +109,11 @@ static const char * GetEncoding(SEL name) {
     return operation;
   }), GetEncoding(@selector(operationWithCompletion:)));
   
-  class_addMethod(object_getClass(taskClass), @selector(averageResponseTime), imp_implementationWithBlock(^CGFloat(id self){
+  class_addMethod(object_getClass(taskClass), @selector(averageResponseTime), imp_implementationWithBlock(^CGFloat(id __unused innerSelf){
     return averageResponseTime;
   }), GetEncoding(@selector(averageResponseTime)));
   
-  class_addMethod(object_getClass(taskClass), @selector(priority), imp_implementationWithBlock(^SLNTaskPriority(id self){
+  class_addMethod(object_getClass(taskClass), @selector(priority), imp_implementationWithBlock(^SLNTaskPriority(id __unused innerSelf){
     return priority;
   }), GetEncoding(@selector(priority)));
   
@@ -156,7 +156,7 @@ static const char * GetEncoding(SEL name) {
   StartBlock();
 //  XCTestExpectation *expectation = [self expectationWithDescription:@"Scheduled tasks"];
 
-  void (^completion)(UIBackgroundFetchResult) = ^(UIBackgroundFetchResult result) {
+  void (^completion)(UIBackgroundFetchResult) = ^(UIBackgroundFetchResult __unused result) {
     EndBlock();
 //    [expectation fulfill];
     XCTAssertTrue(YES, @"Tasks all successfully executed");
@@ -188,17 +188,17 @@ static const char * GetEncoding(SEL name) {
     NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
       StartBlock();
       [SLNScheduler scheduleTasks:tasks];
-      [SLNScheduler startWithCompletion:^(UIBackgroundFetchResult result) {
+      [SLNScheduler startWithCompletion:^(UIBackgroundFetchResult __unused result) {
         EndBlock();
         NSLog(@"Tasks completed");
       }];
-      [SLNScheduler startWithCompletion:^(UIBackgroundFetchResult result) { NSLog(@"Tasks completed"); }];
+      [SLNScheduler startWithCompletion:^(UIBackgroundFetchResult __unused result) { NSLog(@"Tasks completed"); }];
       WaitUntilBlockCompletes();
     }];
     [operations addObject:op];
   }
 
-  [SLNScheduler startWithCompletion:^(UIBackgroundFetchResult result) {
+  [SLNScheduler startWithCompletion:^(UIBackgroundFetchResult __unused result) {
     NSLog(@"Inner completed");
   }];
   
@@ -211,10 +211,10 @@ static const char * GetEncoding(SEL name) {
   }];
   [operations addObject:finalOp];
   
-  NSInteger i = [operations count] - 1;
+  NSInteger i = (NSInteger)[operations count] - 1;
   while (i > 0) {
-    NSOperation *op = [operations objectAtIndex:i];
-    NSOperation *previousOp = [operations objectAtIndex:(i-1)];
+    NSOperation *op = [operations objectAtIndex:(NSUInteger)i];
+    NSOperation *previousOp = [operations objectAtIndex:(NSUInteger)(i-1)];
     if (previousOp) {
       [op addDependency:previousOp];
     }
